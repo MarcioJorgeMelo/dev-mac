@@ -65,7 +65,7 @@ const ProductDetails = ({product}: ProductDetailsProps) => {
                                 <ChevronLeftIcon/>
                             </Button>
                             <p className="w-4">{quantity}</p>
-                            <Button variant="outline" className="h-8 w-8 rounded-xl bg-red-500 hover:bg-red-600" onClick={handleIncreaseQuantity}>
+                            <Button variant="destructive" className="h-8 w-8 rounded-xl" onClick={handleIncreaseQuantity}>
                                 <ChevronRightIcon color="#FFF" />
                             </Button>
                         </div>

@@ -5,7 +5,9 @@ import { formatCurrency } from "@/utils/format-currency";
 import { Prisma, Product, Restaurant } from "@prisma/client";
 import { ChefHatIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { CartContext } from "../../contexts/cart";
+import CartSheet from "../../components/cartSheet";
 
 interface ProductDetailsProps {
     product: Prisma.ProductGetPayload<{ include: { restaurant: {
@@ -17,6 +19,7 @@ interface ProductDetailsProps {
 }
 
 const ProductDetails = ({product}: ProductDetailsProps) => {
+    const {toggleCart, addProduct} = useContext(CartContext);
     const [quantity, setQuantity] = useState(1);
 
     const handleDecreaseQuantity = () => {
@@ -33,8 +36,17 @@ const ProductDetails = ({product}: ProductDetailsProps) => {
         setQuantity((prev) => prev + 1);
     }
 
+    const handleAddToCart = () => {
+        addProduct({
+            ...product,
+            quantity,
+        });
+        toggleCart();
+    }
+
     return (
-        <div className="relative z-50 rounded-t-3xl p-5 mt-[-1.5rem] flex-auto flex flex-col overflow-hidden">
+        <>
+            <div className="relative z-50 rounded-t-3xl p-5 mt-[-1.5rem] flex-auto flex flex-col overflow-hidden">
                 <div className="flex-auto overflow-hidden">
                     <div className="flex items-center gap-1.5">
                         <Image
@@ -53,8 +65,8 @@ const ProductDetails = ({product}: ProductDetailsProps) => {
                                 <ChevronLeftIcon/>
                             </Button>
                             <p className="w-4">{quantity}</p>
-                            <Button variant="outline" className="h-8 w-8 rounded-xl" onClick={handleIncreaseQuantity}>
-                                <ChevronRightIcon/>
+                            <Button variant="outline" className="h-8 w-8 rounded-xl bg-red-500 hover:bg-red-600" onClick={handleIncreaseQuantity}>
+                                <ChevronRightIcon color="#FFF" />
                             </Button>
                         </div>
                     </div>
@@ -78,10 +90,13 @@ const ProductDetails = ({product}: ProductDetailsProps) => {
                     </ScrollArea>
                 </div>    
 
-                <Button className="rounded-full w-full mt-3">
+                <Button className="rounded-full w-full mt-3" onClick={handleAddToCart}>
                     Adicionar à sacola
                 </Button>            
-        </div>
+            </div>
+
+            <CartSheet/>
+        </>
     );
 }
 
